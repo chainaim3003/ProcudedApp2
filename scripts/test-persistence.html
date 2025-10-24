@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Purchase Order Persistence</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Purchase Order Persistence Test</h1>
+    
+    <div class="test-section">
+        <h2>Test 1: Create Mock Purchase Order</h2>
+        <button onclick="createMockPO()">Create Mock PO</button>
+        <button onclick="clearStorage()">Clear Storage</button>
+        <div id="test1-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 2: Check localStorage</h2>
+        <button onclick="checkStorage()">Check localStorage</button>
+        <div id="test2-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test 3: Simulate Role Switch</h2>
+        <button onclick="simulateRoleSwitch()">Simulate Role Switch</button>
+        <div id="test3-result"></div>
+    </div>
+
+    <script>
+        function createMockPO() {
+            const mockPO = {
+                id: 1,
+                buyer: "506700GE1G29325QX363", // TechCorp LEI
+                seller: "549300XOCUZD4EMKGY96", // SupplierCo LEI
+                buyerLEI: "506700GE1G29325QX363",
+                sellerLEI: "549300XOCUZD4EMKGY96",
+                buyerVLEIAID: "ELbfbbLMcKinMyOrQMDm8kDBaxfqHRhruA1ZF7EZS4hF",
+                sellerVLEIAID: "EHx9LmN8wRZ6kUpY8QRvSj5sN9oYn3UcEcIdZm9zC",
+                description: "Test Software Development Services",
+                amount: 5000000000, // $5000 in USDC (7 decimals)
+                status: "Created",
+                createdAt: Date.now()
+            };
+
+            localStorage.setItem('purchaseOrders', JSON.stringify([mockPO]));
+            
+            document.getElementById('test1-result').innerHTML = `
+                <div class="success">
+                    <h3>✅ Mock PO Created</h3>
+                    <pre>${JSON.stringify(mockPO, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function checkStorage() {
+            const stored = localStorage.getItem('purchaseOrders');
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                document.getElementById('test2-result').innerHTML = `
+                    <div class="success">
+                        <h3>✅ localStorage Data Found</h3>
+                        <p><strong>Count:</strong> ${parsed.length}</p>
+                        <pre>${JSON.stringify(parsed, null, 2)}</pre>
+                    </div>
+                `;
+            } else {
+                document.getElementById('test2-result').innerHTML = `
+                    <div class="error">
+                        <h3>❌ No Data in localStorage</h3>
+                        <p>No purchase orders found in localStorage</p>
+                    </div>
+                `;
+            }
+        }
+
+        function simulateRoleSwitch() {
+            const stored = localStorage.getItem('purchaseOrders');
+            if (!stored) {
+                document.getElementById('test3-result').innerHTML = `
+                    <div class="error">
+                        <h3>❌ No Data to Test</h3>
+                        <p>Please create a mock PO first</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const purchaseOrders = JSON.parse(stored);
+            const testPO = purchaseOrders[0];
+
+            // Test buyer filtering
+            const buyerLEI = "506700GE1G29325QX363"; // TechCorp
+            const sellerLEI = "549300XOCUZD4EMKGY96"; // SupplierCo
+
+            const buyerFiltered = purchaseOrders.filter(po => po.buyerLEI === buyerLEI);
+            const sellerFiltered = purchaseOrders.filter(po => po.sellerLEI === sellerLEI);
+
+            document.getElementById('test3-result').innerHTML = `
+                <div class="success">
+                    <h3>✅ Role Switch Simulation</h3>
+                    <p><strong>Total POs:</strong> ${purchaseOrders.length}</p>
+                    <p><strong>Buyer (TechCorp) POs:</strong> ${buyerFiltered.length}</p>
+                    <p><strong>Seller (SupplierCo) POs:</strong> ${sellerFiltered.length}</p>
+                    <h4>Buyer View:</h4>
+                    <pre>${JSON.stringify(buyerFiltered, null, 2)}</pre>
+                    <h4>Seller View:</h4>
+                    <pre>${JSON.stringify(sellerFiltered, null, 2)}</pre>
+                </div>
+            `;
+        }
+
+        function clearStorage() {
+            localStorage.removeItem('purchaseOrders');
+            document.getElementById('test1-result').innerHTML = `
+                <div class="success">
+                    <h3>✅ Storage Cleared</h3>
+                </div>
+            `;
+        }
+
+        // Auto-check storage on load
+        window.onload = function() {
+            checkStorage();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+# KERIA Configuration for SupplierCo LLC
+# This agent will manage SupplierCo's organizational identity and issue credentials
+
+name: SupplierCo
+port: 3901
+admin_port: 3902
+boot_port: 3903
+
+# Database configuration
+db:
+  type: redis
+  url: redis://redis:6379/1
+
+# Witness configuration
+witness:
+  - name: GLEIF-QVI
+    url: http://witness1:3901
+    toad: 1
+  - name: Witness2
+    url: http://witness2:3901
+    toad: 1
+  - name: Witness3
+    url: http://witness3:3901
+    toad: 1
+
+# Agent configuration
+agent:
+  name: SupplierCo
+  role: organization
+  lei: "549300XOCUZD4EMKGY96"
+  legal_name: "SupplierCo LLC"
+  jurisdiction: "US-CA"
+
+# Credential schemas
+schemas:
+  oor:
+    name: "Official Organizational Role"
+    version: "1.0"
+    schema_id: "EH6ekLjSr8V32WyFbGe1zXjTzFs9PkTYmupJ9H65O14g"
+  ecr:
+    name: "Engagement Context Role"
+    version: "1.0"
+    schema_id: "EKA57bKBKxr_kN7iN_zZeBG8aP0Sv-JvpPLdJ1jg3b2g"
+
+# Logging
+logging:
+  level: INFO
+  format: json

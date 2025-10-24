@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # KERIA Agent for TechCorp (Buyer)
+  keria-techcorp:
+    image: weboftrust/keria:latest
+    container_name: keria-techcorp
+    ports:
+      - "3901:3901"
+      - "3902:3902"
+      - "3903:3903"
+    environment:
+      - KERI_AGENT_CORS=1
+    volumes:
+      - keria_techcorp_data:/usr/local/var/keria
+    networks:
+      - keria-network
+
+  # KERIA Agent for SupplierCo (Seller)
+  keria-supplierco:
+    image: weboftrust/keria:latest
+    container_name: keria-supplierco
+    ports:
+      - "3904:3901"
+      - "3905:3902"
+      - "3906:3903"
+    environment:
+      - KERI_AGENT_CORS=1
+    volumes:
+      - keria_supplierco_data:/usr/local/var/keria
+    networks:
+      - keria-network
+
+  # Witness 1
+  witness1:
+    image: weboftrust/keria:latest
+    container_name: witness1
+    ports:
+      - "3907:3901"
+      - "3908:3902"
+      - "3909:3903"
+    environment:
+      - KERI_AGENT_CORS=1
+    volumes:
+      - witness1_data:/usr/local/var/keria
+    networks:
+      - keria-network
+
+  # Redis for KERIA state management
+  redis:
+    image: redis:7-alpine
+    container_name: keria-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - keria-network
+    command: redis-server --appendonly yes
+
+volumes:
+  keria_techcorp_data:
+  keria_supplierco_data:
+  witness1_data:
+  redis_data:
+
+networks:
+  keria-network:
+    driver: bridge

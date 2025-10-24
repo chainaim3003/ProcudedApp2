@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # KERIA Agent for Buyer Organization
+  keria-buyer:
+    image: weboftrust/keria:latest
+    container_name: keria-buyer
+    ports:
+      - "3901:3901"
+      - "3902:3902"
+      - "3903:3903"
+    environment:
+      - KERI_AGENT_CORS=1
+    volumes:
+      - keria_buyer_data:/usr/local/var/keria
+    networks:
+      - keria-network
+    restart: unless-stopped
+
+  # KERIA Agent for Seller Organization
+  keria-seller:
+    image: weboftrust/keria:latest
+    container_name: keria-seller
+    ports:
+      - "3904:3901"
+      - "3905:3902"
+      - "3906:3903"
+    environment:
+      - KERI_AGENT_CORS=1
+    volumes:
+      - keria_seller_data:/usr/local/var/keria
+    networks:
+      - keria-network
+    restart: unless-stopped
+
+  # Witness 1
+  witness1:
+    image: weboftrust/keria:latest
+    container_name: witness1
+    ports:
+      - "3907:3901"
+      - "3908:3902"
+      - "3909:3903"
+    environment:
+      - KERI_AGENT_CORS=1
+    volumes:
+      - witness1_data:/usr/local/var/keria
+    networks:
+      - keria-network
+    restart: unless-stopped
+
+  # Redis for KERIA state management
+  redis:
+    image: redis:7-alpine
+    container_name: keria-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - keria-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+volumes:
+  keria_buyer_data:
+    driver: local
+  keria_seller_data:
+    driver: local
+  witness1_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  keria-network:
+    driver: bridge

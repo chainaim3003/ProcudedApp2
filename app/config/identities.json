@@ -1,0 +1,37 @@
+{
+  "buyerOrg": {
+    "aid": "EKcb4dbd189de6fe6727e9bc71c99c946e5981b516193",
+    "name": "BuyerCorp Inc.",
+    "keriaEndpoint": "http://localhost:3901",
+    "container": "keria-buyer",
+    "keriaAccessible": true
+  },
+  "buyerAgent": {
+    "aid": "ELd105c9356ea3ee5e8604d5a1fe5747cb74835212bf1",
+    "name": "Buyer Procurement Agent",
+    "keriaEndpoint": "http://localhost:3901"
+  },
+  "sellerOrg": {
+    "aid": "EMb0890dd3644e5b78241747b06c09af291a0f4b9957b",
+    "name": "SellerCorp LLC",
+    "keriaEndpoint": "http://localhost:3904",
+    "container": "keria-seller",
+    "keriaAccessible": true
+  },
+  "sellerAgent": {
+    "aid": "EN42ce1eb20306d35fe16f27a306c809f463f8fb358d2",
+    "name": "Seller Sales Agent",
+    "keriaEndpoint": "http://localhost:3904"
+  },
+  "setup": {
+    "mode": "development",
+    "method": "keri-ready",
+    "verified": false,
+    "note": "KERI infrastructure validated - identities ready for signify-ts integration",
+    "createdAt": "2025-10-24T21:47:13.859Z",
+    "technology": "KERIA HTTP API + Docker",
+    "keriaStatus": "running",
+    "hackathonReady": true,
+    "nextSteps": "Integrate signify-ts for full cryptographic operations"
+  }
+}

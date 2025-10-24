@@ -1,0 +1,31 @@
+# KERIA Configuration for GLEIF External QVI
+# This agent acts as the Qualified vLEI Issuer (QVI) for issuing legal entity credentials
+
+name: GLEIF-QVI
+port: 3901
+admin_port: 3902
+boot_port: 3903
+
+# Database configuration
+db:
+  type: redis
+  url: redis://redis:6379/2
+
+# Agent configuration
+agent:
+  name: GLEIF-External-QVI
+  role: qvi
+  authority: "GLEIF"
+  jurisdiction: "CH"
+
+# Credential schemas
+schemas:
+  qvi:
+    name: "Legal Entity vLEI"
+    version: "1.0"
+    schema_id: "EBfdlu8R27Fbx-ehrqwImnK-8Cm79sqbAQ4MmvEAYqao"
+
+# Logging
+logging:
+  level: INFO
+  format: json

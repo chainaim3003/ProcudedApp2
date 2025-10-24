@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+  # KERIA Agent for TechCorp (Buyer)
+  keria-techcorp:
+    image: gleif/keria:latest
+    container_name: keria-techcorp
+    ports:
+      - "3901:3901"
+      - "3902:3902"
+    environment:
+      - KERIA_AGENT_NAME=TechCorp
+      - KERIA_AGENT_PORT=3901
+      - KERIA_ADMIN_PORT=3902
+      - KERIA_BOOT_PORT=3903
+    volumes:
+      - keria_techcorp_data:/usr/local/var/keria
+    networks:
+      - keria-network
+    command: ["keria", "start", "--config", "/usr/local/var/keria/config.yaml"]
+
+  # KERIA Agent for SupplierCo (Seller)
+  keria-supplierco:
+    image: gleif/keria:latest
+    container_name: keria-supplierco
+    ports:
+      - "3904:3901"
+      - "3905:3902"
+    environment:
+      - KERIA_AGENT_NAME=SupplierCo
+      - KERIA_AGENT_PORT=3901
+      - KERIA_ADMIN_PORT=3902
+      - KERIA_BOOT_PORT=3903
+    volumes:
+      - keria_supplierco_data:/usr/local/var/keria
+    networks:
+      - keria-network
+    command: ["keria", "start", "--config", "/usr/local/var/keria/config.yaml"]
+
+  # Witness 1 (GLEIF External QVI)
+  witness1:
+    image: gleif/keria:latest
+    container_name: witness1
+    ports:
+      - "3906:3901"
+      - "3907:3902"
+    environment:
+      - KERIA_AGENT_NAME=GLEIF-QVI
+      - KERIA_AGENT_PORT=3901
+      - KERIA_ADMIN_PORT=3902
+    volumes:
+      - witness1_data:/usr/local/var/keria
+    networks:
+      - keria-network
+    command: ["keria", "start", "--config", "/usr/local/var/keria/config.yaml"]
+
+  # Witness 2
+  witness2:
+    image: gleif/keria:latest
+    container_name: witness2
+    ports:
+      - "3908:3901"
+      - "3909:3902"
+    environment:
+      - KERIA_AGENT_NAME=Witness2
+      - KERIA_AGENT_PORT=3901
+      - KERIA_ADMIN_PORT=3902
+    volumes:
+      - witness2_data:/usr/local/var/keria
+    networks:
+      - keria-network
+    command: ["keria", "start", "--config", "/usr/local/var/keria/config.yaml"]
+
+  # Witness 3
+  witness3:
+    image: gleif/keria:latest
+    container_name: witness3
+    ports:
+      - "3910:3901"
+      - "3911:3902"
+    environment:
+      - KERIA_AGENT_NAME=Witness3
+      - KERIA_AGENT_PORT=3901
+      - KERIA_ADMIN_PORT=3902
+    volumes:
+      - witness3_data:/usr/local/var/keria
+    networks:
+      - keria-network
+    command: ["keria", "start", "--config", "/usr/local/var/keria/config.yaml"]
+
+  # Redis for KERIA state management
+  redis:
+    image: redis:7-alpine
+    container_name: keria-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - keria-network
+    command: redis-server --appendonly yes
+
+volumes:
+  keria_techcorp_data:
+  keria_supplierco_data:
+  witness1_data:
+  witness2_data:
+  witness3_data:
+  redis_data:
+
+networks:
+  keria-network:
+    driver: bridge
